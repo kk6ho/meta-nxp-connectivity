@@ -1,0 +1,41 @@
+From 69e56d74d395c0cfe732c6a209cac4c88a686210 Mon Sep 17 00:00:00 2001
+From: Haoran Wang <elven.wang@nxp.com>
+Date: Fri, 5 Dec 2025 13:30:09 +0800
+Subject: [PATCH 1/2] MATTER-3758 Remove fatal-warnings ld flags
+
+Remove fatal-warnings flags to fix below build error:
+
+/usr/lib/libcrypto.so: warning: GCS is required by -z gcs, but this
+shared library lacks the necessary property note. The dynamic loader
+might not enable GCS or refuse to load the program unless all the shared
+library dependencies have the GCS marking.
+collect2: error: ld returned 1 exit status
+
+Change-Id: I39fd724e6768447ea4f255e0f63129b851f72a02
+Signed-off-by: Haoran Wang <elven.wang@nxp.com>
+Reviewed-on: http://androidsource.nxp.com/project/30296
+Reviewed-by: Junmeng Li <junmeng.li_1@nxp.com>
+
+Upstream-Status: Inappropriate  [platform specific changes]
+---
+ build/config/compiler/BUILD.gn | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
+index d0e81064ff..7a5260336e 100644
+--- a/build/config/compiler/BUILD.gn
++++ b/build/config/compiler/BUILD.gn
+@@ -260,10 +260,6 @@ config("warnings_common") {
+     ldflags += [ "-Werror" ]
+   }
+ 
+-  if (current_os != "mac" && current_os != "ios") {
+-    ldflags += [ "-Wl,--fatal-warnings" ]
+-  }
+-
+   if (current_os != "mac" && current_os != "ios" && current_os != "linux" &&
+       current_os != "win" && current_os != "tizen" && current_os != "webos" &&
+       current_os != "cmsis-rtos") {
+-- 
+2.34.1
+

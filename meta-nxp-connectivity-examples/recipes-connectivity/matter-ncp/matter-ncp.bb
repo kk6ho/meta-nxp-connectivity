@@ -5,8 +5,9 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10"
 
 SRCBRANCH = "release-matter-ncp-2025q4"
-IMX_MATTER_SRC ?= "gitsm://github.com/NXP/matter.git;protocol=https"
+IMX_MATTER_SRC = "gitsm://github.com/NXP/matter.git;protocol=https"
 SRC_URI = "${IMX_MATTER_SRC};branch=${SRCBRANCH}"
+SRC_URI += "file://0001-MATTER-3758-Remove-fatal-warnings-ld-flags.patch"
 MATTER_PY_PATH ?= "${STAGING_BINDIR_NATIVE}/python3-native/python3"
 
 PATCHTOOL = "git"
@@ -47,8 +48,6 @@ def get_arm_cpu(d):
 TARGET_CPU = "${@get_target_cpu(d)}"
 TARGET_ARM_ARCH = "${@get_arm_arch(d)}"
 TARGET_ARM_CPU = "${@get_arm_cpu(d)}"
-
-S = "${WORKDIR}/git"
 
 do_configure() {
     cd ${S}/
