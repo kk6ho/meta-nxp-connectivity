@@ -1,4 +1,4 @@
-From 9735479d8bf5d5374025ff4b77318233ae9c311f Mon Sep 17 00:00:00 2001
+From 9527004aa23f5a318cc837dd4ad1dd273498213b Mon Sep 17 00:00:00 2001
 From: Haoran Wang <elven.wang@nxp.com>
 Date: Fri, 27 Jun 2025 11:13:49 +0800
 Subject: [PATCH] Add MCU NCP Host driver
@@ -22,23 +22,23 @@ Signed-off-by: Haoran Wang <elven.wang@nxp.com>
  create mode 100644 drivers/misc/ncp_host/mcu_sdio_drv.c
 
 diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 3fe7e2a9bd29..9c6688d0ac34 100644
+index b9c11f67315f..5b956cd38243 100644
 --- a/drivers/misc/Kconfig
 +++ b/drivers/misc/Kconfig
-@@ -628,4 +628,5 @@ source "drivers/misc/uacce/Kconfig"
- source "drivers/misc/pvpanic/Kconfig"
- source "drivers/misc/mchp_pci1xxxx/Kconfig"
+@@ -661,4 +661,5 @@ source "drivers/misc/mchp_pci1xxxx/Kconfig"
  source "drivers/misc/keba/Kconfig"
+ source "drivers/misc/amd-sbi/Kconfig"
+ source "drivers/misc/rp1/Kconfig"
 +source "drivers/misc/ncp_host/Kconfig"
  endmenu
 diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index a9f94525e181..3108ed10d068 100644
+index b32a2597d246..df97278c4000 100644
 --- a/drivers/misc/Makefile
 +++ b/drivers/misc/Makefile
-@@ -72,3 +72,4 @@ obj-$(CONFIG_TPS6594_PFSM)	+= tps6594-pfsm.o
- obj-$(CONFIG_NSM)		+= nsm.o
- obj-$(CONFIG_MARVELL_CN10K_DPI)	+= mrvl_cn10k_dpi.o
+@@ -75,3 +75,4 @@ obj-$(CONFIG_MCHP_LAN966X_PCI)	+= lan966x-pci.o
  obj-y				+= keba/
+ obj-y				+= amd-sbi/
+ obj-$(CONFIG_MISC_RP1)		+= rp1/
 +obj-y               += ncp_host/
 diff --git a/drivers/misc/ncp_host/Kconfig b/drivers/misc/ncp_host/Kconfig
 new file mode 100644
