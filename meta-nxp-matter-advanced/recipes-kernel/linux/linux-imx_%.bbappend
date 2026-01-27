@@ -5,3 +5,4 @@ SRC_URI += "${@bb.utils.contains('MACHINE_FEATURES', 'trusty', 'file://0002-MATT
 SRC_URI += "${@bb.utils.contains('MACHINE_FEATURES', 'trusty', 'file://0001-Add-MCU-NCP-Host-driver.patch', '', d)}"
 SRC_URI += "${@bb.utils.contains('MACHINE_FEATURES', 'trusty', 'file://kernel-config/Enable-Trusty.cfg', '', d)}"
 SRC_URI += "${@bb.utils.contains('MACHINE_FEATURES', 'has-matter-ncp', 'file://kernel-config/Enable-NCP-Host.cfg', '', d)}"
+SRC_URI += "file://kernel-config/Enable-Easymesh.cfg"
