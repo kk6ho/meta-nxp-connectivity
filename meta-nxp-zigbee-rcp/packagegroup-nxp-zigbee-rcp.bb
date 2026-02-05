@@ -7,4 +7,4 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 inherit packagegroup
 
-RDEPENDS:${PN} += "${@bb.utils.contains('MACHINE_FEATURES', 'has-iwxxx', ' zigbee-rcp-sdk zigbee-rcp-apps ', '', d)}"
+RDEPENDS:${PN} += "${@bb.utils.contains('MACHINE_FEATURES', 'has-iwxxx', ' zigbee-rcp-sdk ', '', d)}"

@@ -1,0 +1,77 @@
+Upstream-Status: Inappropriate  [new application]
+
+From 9c6adc6bb8fd8e5a4becd2672f430ed2747c4b8c Mon Sep 17 00:00:00 2001
+From: Jean-Yves Salaun <jean-yves.salaun@nxp.com>
+Date: Tue, 27 Jan 2026 00:11:51 -0800
+Subject: [PATCH] Add new "hello" Zigbee application
+
+---
+ CMakeLists.txt                |  1 +
+ examples/hello/CMakeLists.txt | 27 +++++++++++++++++++++++++++
+ examples/hello/hello.c        | 11 +++++++++++
+ 3 files changed, 39 insertions(+)
+ create mode 100644 examples/hello/CMakeLists.txt
+ create mode 100644 examples/hello/hello.c
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5c5cb19..26d4098 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -36,3 +36,4 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/examples/r23_new_api/CMakeLists.txt)
+ include(${CMAKE_CURRENT_SOURCE_DIR}/examples/cli_nxp/CMakeLists.txt)
+ include(${CMAKE_CURRENT_SOURCE_DIR}/examples/dualpan_nxp/CMakeLists.txt)
+ include(${CMAKE_CURRENT_SOURCE_DIR}/examples/ias_zone_sensor/CMakeLists.txt)
++include(${CMAKE_CURRENT_SOURCE_DIR}/examples/hello/CMakeLists.txt)
+diff --git a/examples/hello/CMakeLists.txt b/examples/hello/CMakeLists.txt
+new file mode 100644
+index 0000000..f9a3277
+--- /dev/null
++++ b/examples/hello/CMakeLists.txt
+@@ -0,0 +1,27 @@
++#
++# Copyright 2026 NXP
++#
++# NXP Proprietary. This software is owned or controlled by NXP and may only be
++# used strictly in accordance with the applicable license terms. By expressly
++# accepting such terms or by downloading, installing, activating and/or otherwise
++# using the software, you are agreeing that you have read, and that you agree to
++# comply with and are bound by, such license terms. If you do not agree to be
++# bound by the applicable license terms, then you may not retain, install,
++# activate or otherwise use the software.
++
++cmake_minimum_required(VERSION 3.10.2)
++
++project(hello)
++
++# Build hello executables
++add_zigbee_executable(
++    NAME hello_zc
++    ROLE COORDINATOR
++    SOURCES examples/hello/hello.c
++)
++
++add_zigbee_executable(
++    NAME hello_zed
++    ROLE END_DEVICE
++    SOURCES examples/hello/hello.c
++)
+diff --git a/examples/hello/hello.c b/examples/hello/hello.c
+new file mode 100644
+index 0000000..29208b3
+--- /dev/null
++++ b/examples/hello/hello.c
+@@ -0,0 +1,11 @@
++/*
++ * Copyright 2025 NXP
++ *
++ * SPDX-License-Identifier: BSD-3-Clause
++ *
++ */
++#include <stdio.h>
++int main() {
++   printf("Hello, World!");
++   return 0;
++}
+-- 
+2.34.1
+

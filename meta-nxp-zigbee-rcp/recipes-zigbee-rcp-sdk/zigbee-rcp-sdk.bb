@@ -1,20 +1,28 @@
 PN = "zigbee-rcp-sdk"
-SUMMARY = "Zigbee RCP SDK on i.MX boards for IWxxx 3-radios on SPI"
-DESCRIPTION = "Zigbee RCP SDK"
+SUMMARY = "Zigbee RCP SDK and example applications on i.MX boards for IWxxx 3-radios on SPI"
+DESCRIPTION = "Zigbee RCP Applications"
 LICENSE = "CLOSED"
-#LIC_FILES_CHKSUM = "file://LICENSE;md5=87109e44b2fda96a8991f27684a7349c"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=87109e44b2fda96a8991f27684a7349c"
 
-S = "${UNPACKDIR}"
+PATCHTOOL = "git"
+
+FILES:${PN} += "${bindir}"
 FILES:${PN} += "usr/lib/systemd"
 PACKAGES = "${PN} ${PN}-dev ${PN}-dbg ${PN}-staticdev"
 
-SRC_URI = ""
-# Zigbee tarball
-SRC_URI += "file://zigbee-rcp-sdk-IW612-Q4-25-RC3.tar"
+DEPENDS += " readline "
+RDEPENDS:${PN} += " readline bash"
+inherit cmake
+
+#SRC_URI = "gitsm://github.com/NXP/nxp_zboss_libs_sdk.git;protocol=https;branch=release/linux;tag=v019.2601.027"
+SRC_URI = "git://bitbucket.sw.nxp.com/connint/nxp_zboss_libs_sdk.git;protocol=ssh;branch=release/linux;tag=v019.2601.027"
+SRCREV = "${AUTOREV}"
+
+# Add "hello" Zigbee new application
+SRC_URI += "file://0001-Add-new-hello-Zigbee-application.patch"
 
 INSANE_SKIP:${PN} += "already-stripped"
-
-do_install() {
+do_install:append() {
     install -d ${D}${libdir}
     install -m 0644 ${S}/libs/libzboss.a ${D}${libdir}
     install -m 0644 ${S}/libs/libzboss.ed.a ${D}${libdir}
@@ -24,12 +32,14 @@ do_install() {
     install -m 0744 ${S}/services/usr/sbin/zb_app.sh ${D}${sbindir}
     install -m 0744 ${S}/services/usr/sbin/zb_config.sh ${D}${sbindir}
     install -m 0744 ${S}/services/usr/sbin/zb_mux.sh ${D}${sbindir}
+    install -m 0744 ${S}/scripts/imx-dualpan.sh ${D}${sbindir}
 
     install -d ${D}${includedir}
     install -d ${D}${includedir}/ha
     install -d ${D}${includedir}/platform
     install -d ${D}${includedir}/zcl
     install -m 0644 ${S}/libs/zb_vendor.h ${D}${includedir}
+    install -m 0644 ${S}/libs/zb_cfg_macsplit_nxp.h ${D}${includedir}
     install -m 0644 ${S}/include/*.h ${D}${includedir}
     install -m 0644 ${S}/include/ha/*.h ${D}${includedir}/ha
     install -m 0644 ${S}/include/platform/*.h ${D}${includedir}

@@ -27,10 +27,9 @@ The zb_mux daemon also creates two Virtual UART Devices that both Zigbee and Thr
 ## IWxxx Zigbee Stack and Examples
 
 meta-nxp-connectivity comes with a certified Zigbee stack for IWxxx chipsets<br>
-It is split in two Yocto recipes:<br>
+It is provided by a single Yocto recipe:<br>
 
-* [zigbee-rcp-sdk](https://github.com/nxp-imx/meta-nxp-connectivity/tree/master/meta-nxp-zigbee-rcp/recipes-zigbee-rcp/recipes-zigbee-rcp-sdk): zb_mux daemon, IWxxx Zigbee Stack header files and static libraries and Linux Systemd services&scripts, IWxxx Zigbee Stack Development Guide documentation<br>
-* [zigbee-rcp-apps](https://github.com/nxp-imx/meta-nxp-connectivity/tree/master/meta-nxp-zigbee-rcp/recipes-zigbee-rcp/recipes-zigbee-rcp-apps): Zigbee Example applications C source code and CMAKE build files<br>
+* [zigbee-rcp-sdk](https://github.com/nxp-imx/meta-nxp-connectivity/tree/master/meta-nxp-zigbee-rcp/recipes-zigbee-rcp-sdk): zb_mux daemon, IWxxx Zigbee Stack header files and static libraries, Linux Systemd services & scripts, IWxxx Zigbee Stack Development Guide documentation, and example applications C source code with CMAKE build files<br>
 
 > **_NOTE:_**
 Additional important resources can be accessed from NXP website. It requires login and granted access to these resources:
@@ -39,191 +38,166 @@ It includes:
     - README_Zboss_package_for_Zigbee.txt
     - Example applications source code
 
-
 ### Zigbee SDK
 
 Once the **i.MX Matter** image is built, all **zigbee-rcp-sdk** components can be found in the Yocto build folder<br>
-For example, for a *MACHINE=imx93evk-iwxxx-matter* build, components are unpacked in *${MY_YOCTO}/bld-xwayland-imx93evk-iwxxx-matter/tmp/work/armv8a-poky-linux/zigbee-rcp-sdk/1.0/sources-unpack/*
-**zigbee-rcp-sdk** goal is to:
+For example, for a *MACHINE=imx93evk-iwxxx-matter* build, the fetched nxp_zboss_libs_sdk repository is unpacked in *${MY_YOCTO}/bld-xwayland-imx93evk-iwxxx-matter/tmp/work/armv8a-poky-linux/zigbee-rcp-sdk/1.0/sources/zigbee-rcp-sdk-1.0/*
 
+**zigbee-rcp-sdk** recipe goal is to:
+
+* fetch and build the **nxp_zboss_libs_sdk** repository which contains the Zigbee Stack and example applications<br>
+* apply patches to add and/or modify example applications (hello, cli_nxp, dualpan_nxp, etc.)<br>
 * install zb_mux daemon and Systemd Zigbee services on the i.MX Root Filesystem<br>
 * install Zigbee header files and static libraries in Yocto build system to build Zigbee example applications<br>
-* install IWxxx Zigbee Stack Development Guide documentation
+* install IWxxx Zigbee Stack Development Guide documentation<br>
+* install example application executables in /usr/bin<br>
+
 
 ### Zigbee Examples
 
-Similarly to **zigbee-rcp-sdk** components, **zigbee-rcp-apps** components can be found in the Yocto build folder<br>
-For example, for a *MACHINE=imx93evk-iwxxx-matter* build, components are unpacked in *${MY_YOCTO}/bld-xwayland-imx93evk-iwxxx-matter/tmp/work/armv8a-poky-linux/zigbee-rcp-apps/1.0/sources-unpack/*
-The folder tree content is:<br>
-
-```bash
-├── CMakeLists.txt
-├── examples
-│   ├── hello
-│       ├── hello.c
-│       ├── CMakeLists.txt
-── zigbee_rcp_app.cmake
-```
-
-#### Zigbee Application Details
-
-* CMakeList.txt: contains all the applications to be built by pointing to the individual "Application CMakeLists.txt" of an application folder
-* zigbee_rcp_app.cmake: builds either a ZC_EXE, a ZR_EXE or a ZED_EXE according settings from each individual "Application CMakeLists.txt"
-
-Taking examples/hello, its CMakeLists.txt is:
-
-```bash
-set(app_proj "examples/hello")
-project(${app_proj})
-message("Project: ${app_proj}")
-
-set(zc_exe "hello_zc")
-list(APPEND zc_src ${app_proj}/hello.c)
-option(ZC_EXE "Build ZC" ON)
-
-set(zr_exe "hello_zr")
-list(APPEND zr_src  ${app_proj}/hello.c)
-option(ZR_EXE "Build ZR" ON)
-
-set(zed_exe "hello_zed")
-list(APPEND zed_src ${app_proj}/hello.c)
-option(ZED_EXE "Build ZED" ON)
-
-include(${CMAKE_CURRENT_SOURCE_DIR}/zigbee_rcp_app.cmake)
-```
-
-zigbee_rcp_app.cmake build results are:
-|Executable<br>in /usr/bin|Zigbee<br>Device Type|Source files|Zigbee<br>Static libraries|
-|:-------|:-------|:-------|:-------|
-|hello_zc|Coordinator|hello.c|libzboss.a|
-|hello_zr|Router|hello.c|libzboss.a|
-|hello_zed|End Device|hello.c|libzboss.ed.a|
-
-#### Import an existing Zigbee application into meta-nxp-connectivity
-From the latest **IW612 Zigbee DualPan package** mentioned above, NXP-ZBOSS-HOST-RELEASE-XXX.YYY-aaaaaa-bbbbbb.zip contains the "examples" folder<br>
-All these examples applications source codes can be easily integrated in the meta-nxp-connectivity to get them in the final i.MX Root Filesystem<br>
-<br>
-Following describes how to import and build examples/cli_nxp<br>
-examples/cli_nxp/Makefile helps to build five executables: cli_nxp_zczr & cli_nxp_zed and zb_daemon_zczr & zb_daemon_zed & zb-ctl<br>
-As an example, zb_daemon_zczr requires the following object files:<br>
-OBJS_ZB_DAEMON_ZCZR = cli_main.o cli_menu_socket.o cli_config.o cli_network.o cli_endpoint.o cli_cluster.o cli_zdo.o cli_installcode.o cli_nvram.o cli_tools.o<br>
-
-All build directive from Makefile needs to be translated into Cmake build directives located in CMakeLists.txt
-
-```bash
-cd ${MY_YOCTO}/sources/meta-nxp-connectivity/meta-nxp-zigbee-rcp/recipes-zigbee-rcp-apps/files/
-mkdir examples/cli_nxp
-cp <NXP-ZBOSS-HOST-RELEASE-XXX.YYY-aaaaaa-bbbbbb>/examples/cli_nxp/ examples/cli_nxp
-mkdir examples/ota_upgrade_nxp
-cp <NXP-ZBOSS-HOST-RELEASE-XXX.YYY-aaaaaa-bbbbbb>/examples/ota_upgrade_nxp/ examples/ota_upgrade_nxp
-
-cat << EOF > examples/cli_nxp/CMakeLists.txt
-cmake_minimum_required(VERSION VERSION 3.10.2)
-
-set(zc_src "")
-set(zr_src "")
-set(zed_src "")
-set(zc_exe "")
-set(zr_exe "")
-set(zed_exe "")
-
-set(app_proj "examples/cli_nxp")
-project(\${app_proj})
-message("Project: \${app_proj}")
-
-set(zc_exe "cli_nxp_zczr")
-list(APPEND zc_src \${app_proj}/cli_main.c \${app_proj}/cli_menu_console.c \${app_proj}/cli_config.c \${app_proj}/cli_network.c \${app_proj}/cli_endpoint.c \${app_proj}/cli_cluster.c \${app_proj}/cli_zdo.c \${app_proj}/cli_installcode.c \${app_proj}/cli_nvram.c \${app_proj}/cli_tools.c)
-option(ZC_EXE "Build ZC" ON)
-
-set(zed_exe "cli_nxp_zed")
-list(APPEND zed_src \${app_proj}/cli_main.c \${app_proj}/cli_menu_console.c \${app_proj}/cli_config.c \${app_proj}/cli_network.c \${app_proj}/cli_endpoint.c \${app_proj}/cli_cluster.c \${app_proj}/cli_zdo.c \${app_proj}/cli_installcode.c \${app_proj}/cli_nvram.c \${app_proj}/cli_tools.c)
-option(ZED_EXE "Build ZED" ON)
-
-include(\${CMAKE_CURRENT_SOURCE_DIR}/zigbee_rcp_app.cmake)
-
-set(zc_src "")
-set(zr_src "")
-set(zed_src "")
-set(zc_exe "")
-set(zr_exe "")
-set(zed_exe "")
-
-set(zc_exe "zb_daemon_zczr")
-list(APPEND zc_src \${app_proj}/cli_main.c \${app_proj}/cli_menu_socket.c \${app_proj}/cli_config.c \${app_proj}/cli_network.c \${app_proj}/cli_endpoint.c \${app_proj}/cli_cluster.c \${app_proj}/cli_zdo.c \${app_proj}/cli_installcode.c \${app_proj}/cli_nvram.c \${app_proj}/cli_tools.c)
-option(ZC_EXE "Build ZC" ON)
-
-set(zed_exe "zb_daemon_zed")
-list(APPEND zed_src \${app_proj}/cli_main.c \${app_proj}/cli_menu_socket.c \${app_proj}/cli_config.c \${app_proj}/cli_network.c \${app_proj}/cli_endpoint.c \${app_proj}/cli_cluster.c \${app_proj}/cli_zdo.c \${app_proj}/cli_installcode.c \${app_proj}/cli_nvram.c \${app_proj}/cli_tools.c)
-option(ZED_EXE "Build ZED" ON)
-
-set(zr_exe "zb-ctl")
-list(APPEND zr_src \${app_proj}/zb-ctl.c)
-option(ZR_EXE "Build ZR" ON)
-
-include(\${CMAKE_CURRENT_SOURCE_DIR}/zigbee_rcp_app.cmake)
-EOF
-
-echo "include(\${CMAKE_CURRENT_SOURCE_DIR}/examples/cli_nxp/CMakeLists.txt)" >> CMakeLists.txt
-
-echo "SRC_URI += \"file://examples/cli_nxp/\"" >> ../zigbee-rcp-apps.bb
-echo "SRC_URI += \"file://examples/ota_upgrade_nxp/\"" >> ../zigbee-rcp-apps.bb
-
-cd ${MY_YOCTO}/bld-xwayland-imx93evk-iwxxx-matter
-bitbake -fc cleanall zigbee-rcp-apps
-bitbake zigbee-rcp-apps
-
-ls -l tmp/work/armv8a-poky-linux/zigbee-rcp-apps/1.0/image/usr/bin/cli_nxp_zczr
-ls -l tmp/work/armv8a-poky-linux/zigbee-rcp-apps/1.0/image/usr/bin/cli_nxp_zed
-ls -l tmp/work/armv8a-poky-linux/zigbee-rcp-apps/1.0/image/usr/bin/zb_daemon_zczr
-ls -l tmp/work/armv8a-poky-linux/zigbee-rcp-apps/1.0/image/usr/bin/zb_daemon_zed
-ls -l tmp/work/armv8a-poky-linux/zigbee-rcp-apps/1.0/image/usr/bin/zb-ctl
-
-```
+Example applications are included in the **nxp_zboss_libs_sdk** repository<br>
+The **zigbee-rcp-sdk** recipe applies patches to add and/or modify example applications<br>
 
 #### Create a new Zigbee application
-From the latest **IW612 Zigbee DualPan package** mentioned above, NXP-ZBOSS-HOST-RELEASE-XXX.YYY-aaaaaa-bbbbbb.zip contains the "examples" folder<br>
-the examples/dualpan_nxp currently builds 3 executables: dualpan_zc, dualpan_zr and dualpan_zed<br>
 
-Based on examples/dualpan_nxp, the new application is **example/my_zigbee_gateway** with only one Zigbee Coordinator executable: **my_zigbee_gw_zc**
+To develop a new Zigbee application, follow these steps:
+
+**Step 1: Modify the fetched repository**
+
+After the initial build, modify the fetched repository directly in the build directory:
+
 ```bash
-cd ${MY_YOCTO}/sources/meta-nxp-connectivity/meta-nxp-zigbee-rcp/recipes-zigbee-rcp-apps/files/
-mkdir examples/my_zigbee_gateway
-cp <NXP-ZBOSS-HOST-RELEASE-XXX.YYY-aaaaaa-bbbbbb>/examples/dualpan_nxp/dualpan_zc.c examples/my_zigbee_gateway/my_gw_zc.c
-cp <NXP-ZBOSS-HOST-RELEASE-XXX.YYY-aaaaaa-bbbbbb>/examples/dualpan_nxp/dualpan_channel.h examples/my_zigbee_gateway/
-cp <NXP-ZBOSS-HOST-RELEASE-XXX.YYY-aaaaaa-bbbbbb>/examples/dualpan_nxp/dualpan.h examples/my_zigbee_gateway/
-
-cat << EOF > examples/my_zigbee_gateway/CMakeLists.txt
-cmake_minimum_required(VERSION VERSION 3.10.2)
-
-set(zc_src "")
-set(zr_src "")
-set(zed_src "")
-set(zc_exe "")
-set(zr_exe "")
-set(zed_exe "")
-
-set(app_proj "examples/my_zigbee_gateway")
-project(\${app_proj})
-message("Project: \${app_proj}")
-
-set(zc_exe "my_zigbee_gw_zc")
-list(APPEND zc_src \${app_proj}/my_gw_zc.c \${app_proj}/dualpan_channel.c)
-option(ZC_EXE "Build ZC" ON)
-
-include(\${CMAKE_CURRENT_SOURCE_DIR}/zigbee_rcp_app.cmake)
-EOF
-
-echo "include(\${CMAKE_CURRENT_SOURCE_DIR}/examples/my_zigbee_gateway/CMakeLists.txt)" >> CMakeLists.txt
-
-echo "SRC_URI += \"file://examples/my_zigbee_gateway/\"" >> ../zigbee-rcp-apps.bb
-
-cd ${MY_YOCTO}/bld-xwayland-imx93evk-iwxxx-matter
-bitbake -fc cleanall zigbee-rcp-apps
-bitbake zigbee-rcp-apps
-
-ls -l tmp/work/armv8a-poky-linux/zigbee-rcp-apps/1.0/image/usr/bin/my_zigbee_gw_zc
+cd ${MY_YOCTO}/bld-xwayland-imx93evk-iwxxx-matter/tmp/work/armv8a-poky-linux/zigbee-rcp-sdk/1.0/sources/zigbee-rcp-sdk-1.0
 ```
-After a direct transfer in /usr/bin folder of i.MX, new **my_zigbee_gw_zc** executable is available
+
+Create your new application files:
+
+```bash
+mkdir -p examples/my_zigbee_gateway
+cat << 'EOF' > examples/my_zigbee_gateway/CMakeLists.txt
+#
+# Copyright 2026 NXP
+#
+# NXP Proprietary. This software is owned or controlled by NXP and may only be
+# used strictly in accordance with the applicable license terms.
+#
+
+cmake_minimum_required(VERSION 3.10.2)
+
+project(my_zigbee_gateway)
+
+# Build my_zigbee_gateway Coordinator executable
+add_zigbee_executable(
+    NAME my_zigbee_gw_zc
+    ROLE COORDINATOR
+    SOURCES 
+        examples/my_zigbee_gateway/my_gw_zc.c
+)
+EOF
+```
+
+Create your application source files (my_gw_zc.c, etc.) with your custom implementation<br>
+
+**Step 2: Add your application to the build**
+
+Edit the main CMakeLists.txt to include your application:
+
+```bash
+echo "include(\${CMAKE_CURRENT_SOURCE_DIR}/examples/my_zigbee_gateway/CMakeLists.txt)" >> CMakeLists.txt
+```
+
+**Step 3: Test the build**
+
+Compile and test your application without creating a permanent patch:
+
+```bash
+cd ${MY_YOCTO}/bld-xwayland-imx93evk-iwxxx-matter
+bitbake -fc compile zigbee-rcp-sdk
+```
+
+The application will be built. Transfer the executable to your i.MX target and test:
+
+```bash
+ls -l tmp/work/armv8a-poky-linux/zigbee-rcp-sdk/1.0/build/my_zigbee_gw_zc
+```
+
+**Step 4: Create a patch (once testing is successful)**
+
+Once your application is verified on the i.MX target, create a permanent patch similarly as done in existing 0001-Add-new-hello-Zigbee-application.patch 
+
+```bash
+cd ${MY_YOCTO}/sources/meta-nxp-connectivity/meta-nxp-zigbee-rcp/recipes-zigbee-rcp-sdk/files
+
+cat << 'EOF' > 0002-Add-my-zigbee-gateway-application.patch
+Upstream-Status: Inappropriate [new application]
+From: Your Name <your.email@nxp.com>
+Date: <date>
+Subject: [PATCH] Add new my_zigbee_gateway application
+
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -36,3 +36,4 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/examples/r23_new_api/CMakeLists.txt)
+ include(${CMAKE_CURRENT_SOURCE_DIR}/examples/hello/CMakeLists.txt)
+ include(${CMAKE_CURRENT_SOURCE_DIR}/examples/cli_nxp/CMakeLists.txt)
+ include(${CMAKE_CURRENT_SOURCE_DIR}/examples/dualpan_nxp/CMakeLists.txt)
++include(${CMAKE_CURRENT_SOURCE_DIR}/examples/my_zigbee_gateway/CMakeLists.txt)
+
+--- /dev/null
++++ b/examples/my_zigbee_gateway/CMakeLists.txt
+@@ -0,0 +1,18 @@
++#
++# Copyright 2026 NXP
++#
++# NXP Proprietary. This software is owned or controlled by NXP and may only be
++# used strictly in accordance with the applicable license terms.
++#
++
++cmake_minimum_required(VERSION 3.10.2)
++
++project(my_zigbee_gateway)
++
++add_zigbee_executable(
++    NAME my_zigbee_gw_zc
++    ROLE COORDINATOR
++    SOURCES 
++        examples/my_zigbee_gateway/my_gw_zc.c
++)
++
++--- /dev/null
++++ b/examples/my_zigbee_gateway/my_gw_zc.c
+@@ -0,0 +1,xx @@
++/* Your application source code */
+EOF
+```
+
+**Step 5: Add the patch to the recipe**
+
+Add the new patch to the recipe file:
+
+```bash
+cd ${MY_YOCTO}/sources/meta-nxp-connectivity/meta-nxp-zigbee-rcp/recipes-zigbee-rcp-sdk
+echo 'SRC_URI += "file://0002-Add-my-zigbee-gateway-application.patch"' >> ../zigbee-rcp-sdk.bb
+```
+
+**Step 6: Clean build and rebuild**
+
+Perform a clean build to apply the patch:
+
+```bash
+cd ${MY_YOCTO}/bld-xwayland-imx93evk-iwxxx-matter
+bitbake -fc cleanall zigbee-rcp-sdk
+bitbake zigbee-rcp-sdk
+```
+
+**Step 7: Verify the final build**
+
+Verify that your application is in the final install directory:
+
+```bash
+ls -l tmp/work/armv8a-poky-linux/zigbee-rcp-sdk/1.0/image/usr/bin/my_zigbee_gw_zc
+```
+
+The application is now ready to be deployed on the i.MX target
 
 
 
