@@ -7,8 +7,8 @@ COMPATIBLE_MACHINE:armv8 = "(.*)"
 COMPATIBLE_MACHINE:armv8a = "(.*)"
 
 
-SRC_URI[md5sum] = "45a184db4eaa3b2427c41535b1b44a4e"
-SRC_URI[sha256sum] = "19e4900c3bdc6da3f10caab66012ece33aacd9d0a073e77332d11e9561983b31"
+SRC_URI[md5sum] = "a9627e478a77aeed3ccabfb1b6ef4ff6"
+SRC_URI[sha256sum] = "b06bab06bba9a64d09479c1f0453f7d0c75c25480f609dfebe565414a30466bb"
 
 inherit fsl-eula2-unpack2
 LIC_FILES_CHKSUM = "file://COPYING;md5=bc649096ad3928ec06a8713b8d787eac"
