@@ -87,6 +87,10 @@ Here is an example of opening `chip-tool-web2` on Windows using Chrome:
 
 <img src="../images/chip-tool-web2/chip-tool-web2_home.png" alt="Alt text" width="500"/>
 
+You can open the navigation sidebar from the Home page by clicking the navigation button in the upper‑left corner. The navigation sidebar is shown as follows.
+
+<img src="../images/chip-tool-web2/chip-tool-web2_navigation.png" alt="Alt text" width="500"/>
+
 > **Note:** The network connected to the running device must be on the same segment as the i.MX device.
 
 <hr>
@@ -112,9 +116,9 @@ It should be noted that chip-tool-web2 uses the `Interactive Mode` to allow user
 
 ### Commissioning a Matter device
 
-The chip-tool-web2 supports four commissioning types: "Add Thread Device", "Add WI-FI Device", "Add OnNetwork Device" and "Add Device by QRCode". You can start commissioning by clicking the corresponding buttons in the GUI header to start commissioning.
+The chip-tool-web2 supports four commissioning types: "Add Thread Device", "Add WIFI Device", "Add OnNetwork Device" and "Add Device by QRCode". You can start commissioning by clicking the corresponding buttons in the GUI header to start commissioning.
 
-<img src="../images/chip-tool-web2/chip-tool-web2_home.png" alt="Alt text" width="500"/>
+<img src="../images/chip-tool-web2/chip-tool-web2_pairing.png" alt="Alt text" width="500"/>
 
 #### Add Thread Device
 
@@ -135,7 +139,7 @@ To obtain the Open Thread dataset, you can either form the OpenThread network ma
 
 #### Add WI-FI Device
 
-Click on the `Add WI-FI Device` button. Enter the `Device ID`, `Device Code`, `Device Alias`, `Network SSID`, `Network Password` and `Device Bluetooth Discriminator`. Then, click the `Send Command` to trigger the command to commission the device to the existing Wi-FI network:
+Click on the `Add WIFI Device` button. Enter the `Device ID`, `Device Code`, `Device Alias`, `Network SSID`, `Network Password` and `Device Bluetooth Discriminator`. Then, click the `Send Command` to trigger the command to commission the device to the existing Wi-FI network:
 
 ```
 $ chip-tool pairing ble-wifi <node_id> <ssid> <password> <pin_code> <discriminator>
@@ -281,21 +285,21 @@ Click the `Media` button in the sidebar. The following interface will be display
 
 ### Launch or Stop app
 
-Enter the `Node Alias (Optional)`, `Node ID`, and `Endpoint ID`. Then, you can click the `Launch APP` or `Stop APP` button to launch or stop the app.
+Enter the `Device Alias`, `Device ID`, and `Endpoint ID`. Then, you can click the `Launch APP` or `Stop APP` button to launch or stop the app.
 
-### Media Control
+### Playback Control
 
-Enter the `Node Alias (Optional)`, `Node ID`, and `Endpoint ID`. Then, use the following buttons in the `Media Control` section to control the status of the `mediaplayback` attribute:
+Enter the `Device Alias`, `Device ID`, and `Endpoint ID`. Then, use the following buttons in the `Playback Control` section to control the status of the `mediaplayback` attribute:
 
--   Use the `Play APP` button to trigger the following command to change the current media playback state to play:
+-   Use the `Play` button to trigger the following command to change the current media playback state to play:
     ```
     $ chip-tool mediaplayback play <node_id> <endpoint_id>
     ```
--   Use the `Pause APP` button to trigger the following command to change the current media playback state to pause:
+-   Use the `Pause` button to trigger the following command to change the current media playback state to pause:
     ```
     $ chip-tool mediaplayback pause <node_id> <endpoint_id>
     ```
--   Use the `Stop APP` button to trigger the following command to change the current media playback state to stop:
+-   Use the `Stop` button to trigger the following command to change the current media playback state to stop:
     ```
     $ chip-tool mediaplayback stop <node_id> <endpoint_id>
     ```
@@ -311,7 +315,7 @@ Enter the `Node Alias (Optional)`, `Node ID`, and `Endpoint ID`. Then, use the f
     ```
     $ chip-tool mediaplayback start-over <node_id> <endpoint_id>
     ```
--   Use the `Fast Rewind` button to trigger the following command to rewind the current media, and then you can use the `PLAY` button to play the rewinded media:
+-   Use the `Rewind` button to trigger the following command to rewind the current media, and then you can use the `Play` button to play the rewinded media:
     ```
     $ chip-tool mediaplayback rewind <node_id> <endpoint_id>
     ```
@@ -324,9 +328,9 @@ Enter the `Node Alias (Optional)`, `Node ID`, and `Endpoint ID`. Then, use the f
     -   _<node_id\>_ is the user-defined ID of the commissioned node.
     -   _<endpoint_id\>_ is the ID of the endpoint with `mediaplayback` cluster implemented.
 
-### Media Status
+### Media Information
 
-Enter the `Node Alias (Optional)`, `Node ID`, and `Endpoint ID`. Then, use the following buttons to read the status of the `mediaplayback` attribute in the `Media Read` section.
+Enter the `Device Alias`, `Device ID`, and `Endpoint ID`. Then, use the following buttons to read the status of the `mediaplayback` attribute in the `Media Information` section.
 
 -   Use the `Current State` button to trigger the following command to read the current state of media playback:
     ```
@@ -340,7 +344,7 @@ Enter the `Node Alias (Optional)`, `Node ID`, and `Endpoint ID`. Then, use the f
     ```
     $ chip-tool mediaplayback read duration <node_id> <endpoint_id>
     ```
--   Use the `Sampled Position` button to trigger the following command to read current sampled position playback speed of the currently playing media:
+-   Use the `Position` button to trigger the following command to read current sampled position playback speed of the currently playing media:
     ```
     $ chip-tool mediaplayback read sampled-position <node_id> <endpoint_id>
     ```
@@ -385,7 +389,7 @@ To access the `Binding` function in the chip-tool-web2, click `Binding` button o
 
 First, the light_switch_combo application should run properly on the K32W Matter device, and then use the chip-tool-web2 ble-thread pairing method to commission with two light_switch_combo devices separately.
 
-Two light-switch_combo devices, one used as the switch device and the other used as the light device. Before binding, the access control list must be written. Therefore, in the `Write ACL` section, enter the `Lighting Node Alias (Options)`, `Lighting Node ID` of the light_switch_combo device which play as lighting device, enter the `Switch Node Alias (Options)`, `Switch Node ID` of the light_switch_combo device which play as switch device, `ACL EndPoint ID` is recommended to use endpoint `0`. Then click the `Write ACL` button to trigger write acl command like below.
+Two light-switch_combo devices, one used as the switch device and the other used as the light device. Before binding, the access control list must be written. Therefore, in the `Write ACL` section, enter the `Lighting Node Alias`, `Lighting Node ID` of the light_switch_combo device which play as lighting device, enter the `Switch Node Alias`, `Switch Node ID` of the light_switch_combo device which play as switch device, `ACL EndPoint ID` is recommended to use endpoint `0`. Then click the `Write ACL` button to trigger write acl command like below.
 ```
 chip-tool accesscontrol write acl <acl_data> <node_id> <endpoint_id>
 ```
@@ -425,7 +429,7 @@ Click the `Multi-Admin` button in sidebar, the following interface will be displ
 
 <img src="../images/chip-tool-web2/chip-tool-web2_multiadmin.png" alt="Alt text" width="500"/>
 
-Enter `Node ID`, `Option`, `Window Timeout`, `Iteration` and `Discriminator`. Then, click `Open Commissioning Window with BCM` (when `Option` is 0) or `Open Commissioning Window with ECM` (when `Option` is 1) button to trigger the Open Commissioning window:
+Enter `Device ID`, `Commissioning Method`, `Window Timeout`, `Iteration` and `Discriminator`. Then, click `Open Window with BCM` or `Open Window with ECM` button to trigger the Open Commissioning window:
 ```
 $ chip-tool pairing open-commissioning-window <node_id> <option> <window_timeout> <iteration> <discriminator>
 ```
@@ -464,9 +468,9 @@ To access the `energyevse` function in the chip-tool-web2, click the `Energy EVS
 
 <img src="../images/chip-tool-web2/chip-tool-web2_eevse1.png" alt="Alt text" width="500"/>
 
-### Event Trigger
+### EEVSE Event Trigger
 
-Enter the `Node Alias (Optional)`, `Node ID`, and `Endpoint ID` of the commissioned Matter chip-energy-management-app device, then click the `TRIGGER`s or `CLEAR`s button to trigger or clear the simulated event. 
+Enter the `Device Alias`, `Device ID`, and `Endpoint ID` of the commissioned Matter chip-energy-management-app device, then click the `TRIGGER`s or `CLEAR`s button to trigger or clear the simulated event. 
 
 - The `Start Trigger Event` button is used to simulate a start event as the basis for triggering subsequent simulated events.
 - The `Trigger PluggedIn` button is used to simulate a plugged-in event. Indicates that electric vehicles is connected to the charging station. This event must be triggered after a start event has been triggered.
@@ -477,7 +481,7 @@ Enter the `Node Alias (Optional)`, `Node ID`, and `Endpoint ID` of the commissio
 
 When simulating events, the principle of "last trigger, first clear" should be used, e.g. the order should be: `Start Trigger Event` -- `Trigger PluggedIn` -- `Trigger Charging Demand` -- `Clear Charging Demand` -- `Clear PluggedIn` -- `Clear Trigger Event`
 
-### Charging Enable
+### EEVSE Charging Enable
 
 <img src="../images/chip-tool-web2/chip-tool-web2_eevse2.png" alt="Alt text" width="500"/>
 
@@ -581,7 +585,7 @@ Click the "Press here to select the OTA file to upload" button to select the OTA
 
 ### Step 2 Run chip-ota-provider-app
 
-Enter the `File name` and click the `Run Chip-OTA-Provider` button to run the chip-ota-provider-app on the chip-tool-web2 running i.MX controller device. Make sure the pop-up information “OTA Report: chip-ota-provider-app start successfully” shows that the chip-ota-provider-app started successfully.
+Enter the `File name` and click the `chip-ota-provider-app` button to run the chip-ota-provider-app on the chip-tool-web2 running i.MX controller device. Make sure the pop-up information "OTA Report: chip-ota-provider-app start successfully" shows that the chip-ota-provider-app started successfully.
 
 <img src="../images/chip-tool-web2/chip-tool-web2_ota2.png" alt="Alt text" width="500"/>
 
@@ -601,11 +605,11 @@ Commissioning with chip-ota-provider-app in chip-tool-web2 by selecting `Add OnN
 
 <img src="../images/chip-tool-web2/chip-tool-web2_ota3.png" alt="Alt text" width="500"/>
 
-Enter the `Chip-OTA-Provider device node ID` and click `Send Write ACL (OTA) command` in the `Write ACL (OTA)` section to start the write ACL processing.
+Enter the `OTA Provider Device ID` and click `Send Write ACL (OTA) command` in the `Write ACL (OTA)` section to start the write ACL processing.
 
 ### Step 7 Send OTA command
 
-Enter the `OTA Provider Node ID` and `OTA Requestor Node ID`, then click the `Send OTA software update requestor command` button to start the OTA processing.
+Enter the `OTA Provider Device ID` and `OTA Requestor Device ID`, then click the `Send OTA software update requestor command` button to start the OTA processing.
 Please notice the pop-up information "OTA Report: chip-ota-provider-app ota transfer successfully" to confirm that the OTA process has finished.
 
 After completing the OTA process, [check the OTA processing on the end device](./nxp_mpu_matter_demos.md#ota_check).
@@ -629,6 +633,10 @@ Clicking on a device node in the topology view will display detailed information
 <hr>
 
 <a name="note"></a>
+
+## Known Issue
+
+
 
 ## Additional Notes
 

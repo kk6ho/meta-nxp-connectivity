@@ -447,7 +447,7 @@ ___[ELE](https://www.nxp.com/products/nxp-product-information/nxp-product-progra
 ##### control the nxp-media-app
 Before playing media, you need to put the __media__ in the `/home/root/media` folder and select the output audio cards.
 
-    # list all audio outputs
+    # list all audio outputs. Skip this step when running the nxp-media-app on FRDM93.
     $ chip-tool audiooutput read output-list 8888 1
 
 > CHIP:TOO:     [3]: {
@@ -456,7 +456,7 @@ Before playing media, you need to put the __media__ in the `/home/root/media` fo
     CHIP:TOO:       **Name: Audio Jack**
     CHIP:TOO:      }
 
-    # select the index of the audio jack for audio output.
+    # select the index of the audio jack for audio output. Skip this step when running the nxp-media-app on FRDM93.
 > $ chip-tool audiooutput select-output **2** 8888 1
 
 Then you should launch the app, and when you don't need it, you can stop it.
